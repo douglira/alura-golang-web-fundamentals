@@ -53,3 +53,45 @@ func Excluir(w http.ResponseWriter, r *http.Request) {
 	models.Deletar(idProduto)
 	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 }
+
+func Editar(w http.ResponseWriter, r *http.Request) {
+	idProduto, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	if err != nil {
+		log.Println("Erro ao obter o ID do produto:", err)
+	}
+
+	produto := models.BuscarPorId(idProduto)
+	templates.ExecuteTemplate(w, "Edit", produto)
+}
+
+func Atualizar(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		id := r.FormValue("id")
+		nome := r.FormValue("nome")
+		descricao := r.FormValue("descricao")
+		preco := r.FormValue("preco")
+		quantidade := r.FormValue("quantidade")
+
+		precoConvertidoFloat, err := strconv.ParseFloat(preco, 64)
+
+		if err != nil {
+			log.Println("Erro na conversão do preço:", err)
+		}
+
+		idConvertidoInt, err := strconv.Atoi(id)
+
+		if err != nil {
+			log.Println("Erro na conversão do ID:", err)
+		}
+
+		quantidadeConvertidaInt, err := strconv.Atoi(quantidade)
+
+		if err != nil {
+			log.Println("Erro na conversão da quantidade:", err)
+		}
+
+		models.AtualizarProduto(idConvertidoInt, nome, descricao, precoConvertidoFloat, quantidadeConvertidaInt)
+	}
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+}
