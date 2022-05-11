@@ -51,3 +51,20 @@ func InserirNovoProduto(nome string, preco float64, descricao string, quantidade
 
 	defer db.Close()
 }
+
+func Deletar(id int) {
+	db := db.ConectaBD()
+	query, err := db.Prepare("DELETE FROM produtos WHERE id = $1")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	_, err = query.Exec(id)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer db.Close()
+}

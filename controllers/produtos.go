@@ -39,7 +39,17 @@ func Inserir(w http.ResponseWriter, r *http.Request) {
 		}
 
 		models.InserirNovoProduto(nome, precoConvertidoFloat, descricao, quantidadeConvertidaInt)
-		http.Redirect(w, r, "/new", http.StatusMovedPermanently)
-		return
 	}
+	http.Redirect(w, r, "/new", http.StatusMovedPermanently)
+}
+
+func Excluir(w http.ResponseWriter, r *http.Request) {
+	idProduto, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	if err != nil {
+		log.Println("Erro ao obter o ID do produto:", err)
+	}
+
+	models.Deletar(idProduto)
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 }
